@@ -4,13 +4,15 @@ import random
 import json 
 from datetime import datetime
 
-def render_centered_text(text, font, surface, size=10, color = (239, 239, 42), x=0, y=0, horizontally = True, vertically = False):
-    _, _, text_w, text_h = main_font.get_rect(text, size = size)
+def render_centered_text(text, font_name, surface, size=10, color = (239, 239, 42), x=0, y=0, horizontally = True, vertically = False):
+    font = pg.font.SysFont(font_name, size)
+    text_w, text_h = font.size(text)
     if horizontally:
         x = surface.get_width() // 2 - text_w // 2 
     if vertically:
         y = surface.get_height() // 2 - text_h // 2
-    main_font.render_to( surface, (x,y),text,fgcolor = color, size = size)
+    text_surface = font.render(text, True, color)
+    screen.blit(text_surface,(x,y))
 
 # pygame setup
 pg.init()
@@ -18,7 +20,6 @@ screen_w, screen_h = 720,720
 screen = pg.display.set_mode((screen_w, screen_w))
 clock = pg.time.Clock()
 running = True
-main_font = pg.freetype.SysFont("arial", 24)
 pg.display.set_caption('Zmeika')
 icon = pg.image.load('snake_head.png')
 pg.display.set_icon(icon)
@@ -141,12 +142,12 @@ while running:
         if event.type == pg.QUIT:
             running = False
 
-    render_centered_text("GAME OVER!", main_font, screen, y=100, size = 90)
-    render_centered_text(f" Score : {score}", main_font, screen, y=200, size=50)
+    render_centered_text("GAME OVER!", 'arial', screen, y=100, size = 90)
+    render_centered_text(f" Score : {score}", 'arial', screen, y=200, size=50)
 
-    render_centered_text(f" Highscores :", main_font, screen, y=300, size=50)
+    render_centered_text(f" Highscores :", 'arial', screen, y=300, size=50)
     for i,high_score in enumerate(high_scores):
-        render_centered_text(f"{high_score['date']} : {high_score['score']}", main_font, screen, y=400 + i * 100, size = 40)
+        render_centered_text(f"{high_score['date']} : {high_score['score']}", 'arial', screen, y=400 + i * 100, size = 40)
 
     pg.display.flip()
     clock.tick(10)
